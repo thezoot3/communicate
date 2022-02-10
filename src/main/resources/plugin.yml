@@ -1,0 +1,21 @@
+name: Communicate
+version: '${version}'
+main: games.adlsv.communicate.Communicate
+api-version: 1.16
+commands:
+  verify:
+    description: Verify Your Account
+    usage: /<command>
+  chatmode:
+    description: Change Chat Mode
+    usage: /<command>
+    aliases: [채팅모드, coxldahem, 촘스ㅐㅇㄷ]
+  prefix:
+    description: Control your Prefix
+    usage: /<command>
+    aliases: [칭호, ㅔㄱㄷ럍]
+  profile:
+    description: Show Specific one's Profile
+    usage: /<command> (PlayerName)
+    aliases: [프로필, vmfhvlf, ㅔ개랴ㅣㄷ]
+
