@@ -24,14 +24,14 @@ public class simpleItem {
         this.material = material;
         TextComponent n = Component.text(name);
         meta = item.getItemMeta();
-        meta.displayName(n);
+        meta.displayName(Component.text(ChatColor.translateAlternateColorCodes('&', name)));
         item.setItemMeta(meta);
     }
     public simpleItem(Material material, String name, String[] lores) {
         item = new ItemStack(material);
         this.material = material;
         meta = item.getItemMeta();
-        meta.displayName(Component.text(name));
+        meta.displayName(Component.text(ChatColor.translateAlternateColorCodes('&', name)));
         meta.lore(stringLoreToComponent(lores));
         item.setItemMeta(meta);
     }

@@ -27,7 +27,7 @@ public class MongoDBDocument {
      * @param key 요소를 찾기 위한 키
      */
     public JsonElement get(String key) {
-        String[] keys = key.contains("..") ? key.split("[.]{2}") : new String[]{key};
+        String[] keys = key.contains(".") ? key.split("[.]{1}") : new String[]{key};
         JsonObject obj = element;
         for(String s: keys) {
             if (obj.get(s) != null) {

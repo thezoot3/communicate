@@ -1,5 +1,6 @@
 package games.adlsv.communicate.command;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import games.adlsv.communicate.api.chatting.PlayerSocialInfo;
 import games.adlsv.communicate.api.util.simpleItem;
@@ -32,26 +33,42 @@ public class Profile implements CommandExecutor {
                 inv.setItem(i * 9, new ItemStack(Material.GREEN_STAINED_GLASS));
                 inv.setItem(i * 9 + 8, new ItemStack(Material.GREEN_STAINED_GLASS));
             }
-            simpleItem playerHead = new simpleItem(Material.PLAYER_HEAD, ChatColor.BOLD + p.getName() + "님의 프로필");
-            SkullMeta meta = ((SkullMeta) playerHead.getItemMeta());
-            meta.setOwningPlayer(p);
-            playerHead.applyItemMeta(meta);
-            String[] lore = new String[]{
-                    new StringBuilder().append(ChatColor.WHITE).append(ChatColor.BOLD).append(
-                            (info.get(PlayerSocialInfo.pathList.LASTJOIN).getAsString().equals("online")) ?
-                                    "현재 접속 중인 플레이어입니다" :
-                                    "마지막 접속 시각: " + info.get(PlayerSocialInfo.pathList.LASTJOIN).getAsString()
-                    ).toString(),
-                    new StringBuilder().append(ChatColor.WHITE).append(ChatColor.BOLD).append(
-                            info.get(PlayerSocialInfo.pathList.INTRODUCE).getAsString() != null ?
-                                    "소개: " + info.get(PlayerSocialInfo.pathList.INTRODUCE).getAsString() :
-                                    "소개가 없습니다"
-                    ).toString()
-            };;
-            playerHead.setSimpleLore(lore);
-            inv.setItem(4, playerHead.getItemStack());
+            simpleItem dmIcon = new simpleItem(Material.OAK_SIGN, "&6&l" + p.getName() + "님과 DM 시작하기", new String[]{
+                    "&f&l클릭 시 이 유저와 DM을 시작합니다.",
+                    "&f&lDM은 다른 유저에게 노출되지 않습니다."
+            });
+            simpleItem friendIcon = new simpleItem(Material.EMERALD, "&6&l" + p.getName() + "님에게 친구 요청 보내기", new String[]{
+                    "&f&l클릭 시 이 유저와 DM을 시작합니다.",
+                    "&f&lDM은 다른 유저에게 노출되지 않습니다."
+            });
+            JsonArray array = info.get(PlayerSocialInfo.pathList.FRIENDS).getAsJsonArray();
+            for(JsonElement e :array) {
+                if(e.getAsString().equals(sender.getName())) {}
+            }
+            inv.setItem(4, getPlayerSkullWithInfo(p));
             ((Player) sender).openInventory(inv);
         }
         return false;
+    }
+    public static ItemStack getPlayerSkullWithInfo(Player p) {
+        PlayerSocialInfo info = new PlayerSocialInfo(p);
+        simpleItem playerHead = new simpleItem(Material.PLAYER_HEAD, ChatColor.BOLD + p.getName() + "님의 프로필");
+        SkullMeta meta = ((SkullMeta) playerHead.getItemMeta());
+        meta.setOwningPlayer(p);
+        playerHead.applyItemMeta(meta);
+        String[] lore = new String[]{
+                new StringBuilder().append(ChatColor.WHITE).append(ChatColor.BOLD).append(
+                        p.isOnline() ?
+                                "현재 접속 중인 플레이어입니다" :
+                                "마지막 접속 시각: " + info.get(PlayerSocialInfo.pathList.LASTJOIN).getAsString()
+                ).toString(),
+                new StringBuilder().append(ChatColor.WHITE).append(ChatColor.BOLD).append(
+                        info.get(PlayerSocialInfo.pathList.INTRODUCE).getAsString() != null ?
+                                "소개: " + info.get(PlayerSocialInfo.pathList.INTRODUCE).getAsString() :
+                                "소개가 없습니다"
+                ).toString()
+        };;
+        playerHead.setSimpleLore(lore);
+        return playerHead.getItemStack();
     }
 }

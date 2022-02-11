@@ -38,4 +38,5 @@ public class JoinEventListener implements Listener {
         e.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', welcome.toString()));
         Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',"&f&l[ &a&lJoin&f&l ]&f&l:&f " + e.getPlayer().getName()));
     }
+
 }
