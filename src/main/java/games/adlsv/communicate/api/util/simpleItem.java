@@ -15,6 +15,7 @@ public class simpleItem {
     private Material material;
     private ItemMeta meta;
     private String[] lores;
+    private String name;
     public simpleItem(Material material) {
         item = new ItemStack(material);
         this.material = material;
@@ -41,6 +42,7 @@ public class simpleItem {
     public simpleItem setSimpleLore(String[] lores) {
         meta.lore(stringLoreToComponent(lores));
         item.setItemMeta(meta);
+        this.lores = lores;
         return this;
     }
     public Material getMaterial() {
@@ -55,7 +57,13 @@ public class simpleItem {
     public ItemMeta getItemMeta() {
         return meta;
     }
-    public simpleItem applyItemMeta(ItemMeta meta) {
+    public simpleItem setItemMeta(ItemMeta meta) {
+        item.setItemMeta(meta);
+        return this;
+    }
+    public simpleItem setName(String name) {
+        this.name = name;
+        meta.displayName(Component.text(ChatColor.translateAlternateColorCodes('&', name)));
         item.setItemMeta(meta);
         return this;
     }

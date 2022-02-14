@@ -37,7 +37,7 @@ public class PlayerSocialInfo {
         private final String path;
     }
     public PlayerSocialInfo(Player p) {
-        MongoDBDocument doc = new MongoDBDocument(MongoDBCollections.USERS, eq("connectcode", p.getName()));
+        MongoDBDocument doc = new MongoDBDocument(MongoDBCollections.USERS, eq("connectcode", p.getUniqueId().toString()));
         if(doc.element != null) {
             this.disId = doc.get("id").getAsString();
         } else {

@@ -16,7 +16,7 @@ public class JoinEventListener implements Listener {
     @EventHandler (priority = EventPriority.HIGH)
     public void PlayerJoinEvent(PlayerJoinEvent e) {
         MongoCollection collection = MongoDBCollections.USERS.getCollection();
-        Document doc = (Document) collection.find(eq("connectcode", e.getPlayer().getName())).first();
+        Document doc = (Document) collection.find(eq("connectcode", e.getPlayer().getUniqueId().toString())).first();
         WipeChatting.wipe(e.getPlayer());
         StringBuilder welcome = new StringBuilder();
         welcome.append(Prefix.CHAT.value)

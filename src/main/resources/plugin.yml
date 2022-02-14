@@ -18,4 +18,7 @@ commands:
     description: Show Specific one's Profile
     usage: /<command> (PlayerName)
     aliases: [프로필, vmfhvlf, ㅔ개랴ㅣㄷ]
-
+  friend:
+    description: Manage Your Friend
+    usage: /<command>
+    aliases: [친구, clsrn, 략둥]

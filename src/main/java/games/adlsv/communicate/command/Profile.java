@@ -3,6 +3,7 @@ package games.adlsv.communicate.command;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import games.adlsv.communicate.api.chatting.PlayerSocialInfo;
+import games.adlsv.communicate.api.util.dataUtil;
 import games.adlsv.communicate.api.util.simpleItem;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -19,43 +20,58 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+
 public class Profile implements CommandExecutor {
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if(args[0] != null && Bukkit.getPlayer(args[0]) != null) {
-            Player p = Bukkit.getPlayer(args[0]);
-            Inventory inv = Bukkit.createInventory(
-                    (InventoryHolder) sender, 54,
-                    Component.text(ChatColor.translateAlternateColorCodes('&', ChatColor.BOLD + args[0] + "님의 창고"))
-            );
-            PlayerSocialInfo info = new PlayerSocialInfo(Bukkit.getPlayer(args[0]));
-            for(int i = 0; i < 6; i++) {
-                inv.setItem(i * 9, new ItemStack(Material.GREEN_STAINED_GLASS));
-                inv.setItem(i * 9 + 8, new ItemStack(Material.GREEN_STAINED_GLASS));
-            }
-            simpleItem dmIcon = new simpleItem(Material.OAK_SIGN, "&6&l" + p.getName() + "님과 DM 시작하기", new String[]{
-                    "&f&l클릭 시 이 유저와 DM을 시작합니다.",
-                    "&f&lDM은 다른 유저에게 노출되지 않습니다."
-            });
-            simpleItem friendIcon = new simpleItem(Material.EMERALD, "&6&l" + p.getName() + "님에게 친구 요청 보내기", new String[]{
-                    "&f&l클릭 시 이 유저와 DM을 시작합니다.",
-                    "&f&lDM은 다른 유저에게 노출되지 않습니다."
-            });
-            JsonArray array = info.get(PlayerSocialInfo.pathList.FRIENDS).getAsJsonArray();
-            for(JsonElement e :array) {
-                if(e.getAsString().equals(sender.getName())) {}
-            }
-            inv.setItem(4, getPlayerSkullWithInfo(p));
-            ((Player) sender).openInventory(inv);
+        if(args.length != 0 && dataUtil.isPlayerExist(args[0])) {
+            openProfile((Player) sender, args[0]);
+        } else {
+            openProfile((Player) sender, sender.getName());
         }
-        return false;
+        return true;
     }
-    public static ItemStack getPlayerSkullWithInfo(Player p) {
+    public static void openProfile(Player toShow, String owner) {
+        Player p = (Bukkit.getPlayer(owner) != null) ? Bukkit.getPlayer(owner) : (Player) Bukkit.getOfflinePlayer(owner);
+        Inventory inv = Bukkit.createInventory(
+                toShow, 54,
+                Component.text(ChatColor.translateAlternateColorCodes('&', ChatColor.BOLD + owner + "님의 프로필"))
+        );
+        PlayerSocialInfo info = new PlayerSocialInfo(p);
+        for(int i = 0; i < 6; i++) {
+            inv.setItem(i * 9, new ItemStack(Material.GREEN_STAINED_GLASS));
+            inv.setItem(i * 9 + 8, new ItemStack(Material.GREEN_STAINED_GLASS));
+        }
+        simpleItem dmIcon = new simpleItem(Material.OAK_SIGN, "&6&l" + p.getName() + "&f&l님과 DM 시작하기", new String[]{
+                "&f&l클릭 시 이 유저와 DM을 시작합니다.",
+                "&f&lDM은 다른 유저에게 노출되지 않습니다."
+        });
+        simpleItem friendIcon = new simpleItem(Material.EMERALD, "&6&l" + p.getName() + "&f&l님에게 친구 요청 보내기");
+        for(JsonElement e : info.get(PlayerSocialInfo.pathList.FRIENDS).getAsJsonArray()) {
+            if(e.getAsString().equals(toShow.getName())) {
+                friendIcon.setName("&6&l" + p.getName() + "&f&l님은 당신의 친구입니다!");
+            }
+        }
+        simpleItem ignoreIcon = new simpleItem(Material.BARRIER, "&6&l" + p.getName() + "&f&l님을 &4&l차단&f&l하기");
+        for(JsonElement e : info.get(PlayerSocialInfo.pathList.IGNORES).getAsJsonArray()) {
+            if(e.getAsString().equals(toShow.getName())) {
+                friendIcon.setName("&6&l" + p.getName() + "&f&l님은 이미 &4&l차단&f&l 된 상태입니다.");
+            }
+        }
+        inv.setItem(29, dmIcon.getItemStack());
+        inv.setItem(31, friendIcon.getItemStack());
+        inv.setItem(33, ignoreIcon.getItemStack());
+        inv.setItem(4, getPlayerSkullWithInfo(p).getItemStack());
+        toShow.openInventory(inv);
+    }
+    public static simpleItem getPlayerSkullWithInfo(Player p) {
         PlayerSocialInfo info = new PlayerSocialInfo(p);
         simpleItem playerHead = new simpleItem(Material.PLAYER_HEAD, ChatColor.BOLD + p.getName() + "님의 프로필");
         SkullMeta meta = ((SkullMeta) playerHead.getItemMeta());
         meta.setOwningPlayer(p);
-        playerHead.applyItemMeta(meta);
+        playerHead.setItemMeta(meta);
         String[] lore = new String[]{
                 new StringBuilder().append(ChatColor.WHITE).append(ChatColor.BOLD).append(
                         p.isOnline() ?
@@ -69,6 +85,6 @@ public class Profile implements CommandExecutor {
                 ).toString()
         };;
         playerHead.setSimpleLore(lore);
-        return playerHead.getItemStack();
+        return playerHead;
     }
 }
