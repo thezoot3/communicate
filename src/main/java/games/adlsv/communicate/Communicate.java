@@ -3,12 +3,8 @@ package games.adlsv.communicate;
 import games.adlsv.communicate.api.mongoDB.MongoDBCollections;
 import games.adlsv.communicate.api.mongoDB.MongoDBDocument;
 import games.adlsv.communicate.command.*;
-import games.adlsv.communicate.eventListener.ChatEventListener;
-import games.adlsv.communicate.eventListener.ChatModeInventoryListener;
-import games.adlsv.communicate.eventListener.InventoryClickEvent;
+import games.adlsv.communicate.eventListener.*;
 import org.bukkit.plugin.java.JavaPlugin;
-import games.adlsv.communicate.eventListener.JoinEventListener;
-
 
 
 public final class Communicate extends JavaPlugin {
@@ -23,7 +19,13 @@ public final class Communicate extends JavaPlugin {
         this.getCommand("prefix").setExecutor(new PlayerPrefix());
         this.getCommand("profile").setExecutor(new Profile());
         this.getCommand("friend").setExecutor(new Friend());
-        InventoryClickEvent.setHandler("채팅 모드 설정", new ChatModeInventoryListener());
+        this.getCommand("ignore").setExecutor(new Ignore());
+        this.getCommand("dm").setExecutor(new DirectMessage());
+        InventoryClickEvent.setHandler("채팅 모드 설정", new ChatModeInvListener());
+        InventoryClickEvent.setHandler("님의 프로필", new ProfileInvListener());
+        InventoryClickEvent.setHandler("친구 목록", new FriendInvListener());
+        InventoryClickEvent.setHandler("친구 요청 목록", new FriendRequestInvListener());
+        InventoryClickEvent.setHandler("차단 목록", new IgnoreInvListener());
     }
     @Override
 

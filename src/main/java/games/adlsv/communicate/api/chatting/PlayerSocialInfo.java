@@ -1,6 +1,5 @@
 package games.adlsv.communicate.api.chatting;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
 import com.mongodb.client.model.Updates;
@@ -12,7 +11,7 @@ import net.kyori.adventure.text.TextComponent;
 
 import org.bson.conversions.Bson;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 
 import java.util.ArrayList;
 
@@ -36,13 +35,13 @@ public class PlayerSocialInfo {
         }
         private final String path;
     }
-    public PlayerSocialInfo(Player p) {
+    public PlayerSocialInfo(OfflinePlayer p) {
         MongoDBDocument doc = new MongoDBDocument(MongoDBCollections.USERS, eq("connectcode", p.getUniqueId().toString()));
         if(doc.element != null) {
             this.disId = doc.get("id").getAsString();
         } else {
             TextComponent message = Component.text(Prefix.CHAT.value + " &f&l인증을 완료하지 않으셨습니다.\n" + Prefix.CHAT.value + " &f'&c&lhttps://adlsv.games/login&f'&f&l으로 이동해 인증을 완료하세요");
-            p.sendMessage(ChatColor.translateAlternateColorCodes('&', message.content()));
+            p.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', message.content()));
         }
     }
     public JsonElement get(pathList path) {
@@ -58,13 +57,14 @@ public class PlayerSocialInfo {
             throw e;
         }
     }
-    public void removeValueToArray(pathList path, String value) {
+    public void removeValueFromArray(pathList path, String value) {
         try {
             ArrayList<String> list = new ArrayList<>();
             for(JsonElement e: this.get(path).getAsJsonArray()) {
                 list.add(e.getAsString());
             }
             if(list.contains(value)) {
+                list.remove(value);
                 Bson update = Updates.set(path.getPath(), list);
                 MongoDBCollections.COMMUNICATE.getCollection().updateOne(eq("id", disId), update);
             }

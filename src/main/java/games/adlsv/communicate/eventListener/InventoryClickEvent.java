@@ -12,9 +12,18 @@ public class InventoryClickEvent implements Listener {
     @EventHandler
     public void InventoryClickEvent(org.bukkit.event.inventory.InventoryClickEvent e) {
         String invname = ((TextComponent) e.getView().title()).content();
-        if(listeners.get(invname) != null){
-            listeners.get(invname).listen(e);
+        InventoryListener listener = getExistHandlerContainsTitle(invname);
+        if(listener != null) {
+            listener.listen(e);
         }
+    }
+    private static InventoryListener getExistHandlerContainsTitle(String s) {
+        for(String title : listeners.keySet()) {
+            if(s.contains(title)) {
+                return listeners.get(title);
+            }
+        }
+        return null;
     }
     private static HashMap<String, InventoryListener> listeners = new HashMap<>();
     public static void setHandler(String invname, InventoryListener object) {

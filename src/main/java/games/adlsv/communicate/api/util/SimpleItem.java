@@ -10,17 +10,17 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-public class simpleItem {
+public class SimpleItem {
     private ItemStack item;
     private Material material;
     private ItemMeta meta;
     private String[] lores;
     private String name;
-    public simpleItem(Material material) {
+    public SimpleItem(Material material) {
         item = new ItemStack(material);
         this.material = material;
     }
-    public simpleItem(Material material, String name) {
+    public SimpleItem(Material material, String name) {
         item = new ItemStack(material);
         this.material = material;
         TextComponent n = Component.text(name);
@@ -28,7 +28,7 @@ public class simpleItem {
         meta.displayName(Component.text(ChatColor.translateAlternateColorCodes('&', name)));
         item.setItemMeta(meta);
     }
-    public simpleItem(Material material, String name, String[] lores) {
+    public SimpleItem(Material material, String name, String[] lores) {
         item = new ItemStack(material);
         this.material = material;
         meta = item.getItemMeta();
@@ -39,7 +39,7 @@ public class simpleItem {
     public ItemStack getItemStack() {
         return item;
     }
-    public simpleItem setSimpleLore(String[] lores) {
+    public SimpleItem setSimpleLore(String[] lores) {
         meta.lore(stringLoreToComponent(lores));
         item.setItemMeta(meta);
         this.lores = lores;
@@ -57,11 +57,11 @@ public class simpleItem {
     public ItemMeta getItemMeta() {
         return meta;
     }
-    public simpleItem setItemMeta(ItemMeta meta) {
+    public SimpleItem setItemMeta(ItemMeta meta) {
         item.setItemMeta(meta);
         return this;
     }
-    public simpleItem setName(String name) {
+    public SimpleItem setName(String name) {
         this.name = name;
         meta.displayName(Component.text(ChatColor.translateAlternateColorCodes('&', name)));
         item.setItemMeta(meta);

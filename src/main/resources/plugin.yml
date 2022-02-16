@@ -22,3 +22,11 @@ commands:
     description: Manage Your Friend
     usage: /<command>
     aliases: [친구, clsrn, 략둥]
+  ignore:
+    description: Ignore Someone You hate
+    usage: /<command>
+    aliases: [차단, 이그노어, ㅑ후ㅐㄱㄷ]
+  dm:
+    description: Start direct message mode with someone
+    usage: /<command>
+    aliases: [directmessage, 귓속말, 귓말, pm, 디엠]
