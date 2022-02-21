@@ -1,9 +1,13 @@
 package games.adlsv.communicate.eventListener;
 
 import games.adlsv.communicate.api.chatting.Prefix;
+import games.adlsv.communicate.api.mongoDB.PlayerSocialCollections;
+import games.adlsv.communicate.api.mongoDB.PlayerSocialInfoPath;
 import games.adlsv.communicate.api.social.Ignores;
+import games.adlsv.communicate.api.util.DataUtil;
 import games.adlsv.communicate.command.ChatMode;
 import games.adlsv.communicate.command.DirectMessage;
+import games.adlsv.mongoDBAPI.MongoDBDocumentUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -17,9 +21,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import io.papermc.paper.event.player.AsyncChatEvent;
 
-import games.adlsv.communicate.api.chatting.PlayerSocialInfo;
+import static com.mongodb.client.model.Filters.eq;
 
-import java.util.Objects;
 
 public class ChatEventListener implements Listener { ;
     @EventHandler (priority = EventPriority.HIGH)
@@ -52,8 +55,8 @@ public class ChatEventListener implements Listener { ;
     private static Component getFomattedMessage(String msg, Player sender, String chatmodeValue) {
         StringBuilder text = new StringBuilder();
         try {
-            PlayerSocialInfo info = new PlayerSocialInfo(sender);
-            String prefix = info.get(PlayerSocialInfo.pathList.EQUIPPED).getAsString().replace("\"", "");
+            MongoDBDocumentUtil info = new MongoDBDocumentUtil( PlayerSocialCollections.Path.COMMUNICATE.getCollection(), eq("id", DataUtil.getDiscordIdFromPlayer(sender)));
+            String prefix = info.get(PlayerSocialInfoPath.Path.EQUIPPED.getPath()).getAsString().replace("\"", "");
             text.append(chatmodeValue) //채팅 모드 적용
                     .append((prefix != null) ? " " + prefix + " " : "") //칭호 적용
                     .append((sender.isOp()) ? ChatColor.DARK_RED + sender.getName() + ChatColor.RESET : sender.getName()) //OP이면 빨간색

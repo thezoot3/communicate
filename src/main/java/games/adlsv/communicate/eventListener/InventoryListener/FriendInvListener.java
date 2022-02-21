@@ -1,4 +1,4 @@
-package games.adlsv.communicate.eventListener;
+package games.adlsv.communicate.eventListener.InventoryListener;
 
 import games.adlsv.communicate.api.social.Friends;
 import games.adlsv.communicate.command.Profile;
@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.meta.SkullMeta;
 
-public class FriendRequestInvListener implements InventoryListener {
+public class FriendInvListener implements InventoryListener{
     @Override
     public void listen(InventoryClickEvent e) {
         if(e.getCurrentItem() != null) {
@@ -19,16 +19,11 @@ public class FriendRequestInvListener implements InventoryListener {
                     p.closeInventory();
                     Profile.openProfile(p, requestedP.getName());
                     break;
-                case SHIFT_LEFT:
+                case RIGHT:
                     p.closeInventory();
-                    fri.acceptFriendRequest(requestedP);
-                    break;
-                case SHIFT_RIGHT:
-                    p.closeInventory();
-                    fri.declineFriendRequest(requestedP);
+                    fri.removeFriend(requestedP);
                     break;
             }
         }
-
     }
 }

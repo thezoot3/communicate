@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 
 public class DirectMessage implements CommandExecutor {
-    public static HashMap<Player, OfflinePlayer> dm = new HashMap<>();
+    public static final HashMap<Player, OfflinePlayer> dm = new HashMap<>();
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         StringBuilder message = new StringBuilder().append(Prefix.CHAT.value);
@@ -33,6 +33,7 @@ public class DirectMessage implements CommandExecutor {
             } else if(dm.get((Player) sender) == null) {
                 message.append(" &f&l").append(oppPlayer.getName()).append("님과의 DM모드를 시작했습니다");
                 dm.put((Player) sender, oppPlayer);
+                ChatMode.chatmode.remove((Player) sender);
                 sender.sendMessage(Component.text(ChatColor.translateAlternateColorCodes('&', message.toString())));
             }
         } else {

@@ -1,9 +1,9 @@
 package games.adlsv.communicate;
 
-import games.adlsv.communicate.api.mongoDB.MongoDBCollections;
-import games.adlsv.communicate.api.mongoDB.MongoDBDocument;
 import games.adlsv.communicate.command.*;
 import games.adlsv.communicate.eventListener.*;
+import games.adlsv.communicate.eventListener.InventoryListener.*;
+import games.adlsv.mongoDBAPI.MongoDBConnection;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
@@ -27,6 +27,7 @@ public final class Communicate extends JavaPlugin {
         InventoryClickEvent.setHandler("친구 요청 목록", new FriendRequestInvListener());
         InventoryClickEvent.setHandler("차단 목록", new IgnoreInvListener());
     }
+    public static final MongoDBConnection connection = new MongoDBConnection("thezoot3", "koreayonsei5813", "arendell.vyzh8.mongodb.net");
     @Override
 
     public void onDisable() {

@@ -1,8 +1,11 @@
 package games.adlsv.communicate.api.social;
 
 import com.google.gson.JsonElement;
-import games.adlsv.communicate.api.chatting.PlayerSocialInfo;
 import games.adlsv.communicate.api.chatting.Prefix;
+import games.adlsv.communicate.api.mongoDB.PlayerSocialCollections;
+import games.adlsv.communicate.api.mongoDB.PlayerSocialInfoPath;
+import games.adlsv.communicate.api.util.DataUtil;
+import games.adlsv.mongoDBAPI.MongoDBDocumentUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -10,17 +13,21 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
+import static com.mongodb.client.model.Filters.eq;
+
 public class Ignores {
-    public Player player;
+    public final Player player;
     public Ignores(Player p) {
      player = p;
     }
-    private PlayerSocialInfo info;
+    private MongoDBDocumentUtil info;
     public ArrayList<String> getIgnoresList() {
-        info = new PlayerSocialInfo(player);
+        info = new MongoDBDocumentUtil( PlayerSocialCollections.Path.COMMUNICATE.getCollection(),eq("id", DataUtil.getDiscordIdFromPlayer(player)));
         ArrayList<String> list = new ArrayList<>();
-        for(JsonElement e: info.get(PlayerSocialInfo.pathList.IGNORES).getAsJsonArray()) {
-            list.add(e.getAsString());
+        for(JsonElement e: info.get(PlayerSocialInfoPath.Path.IGNORES.getPath()).getAsJsonArray()) {
+            if(!e.getAsString().equals("")) {
+                list.add(e.getAsString());
+            }
         }
         return list;
     }
@@ -29,7 +36,7 @@ public class Ignores {
     }
     public void addIgnores(OfflinePlayer p) {
         if(!this.isIgnores(p)) {
-                info.addValueToArray(PlayerSocialInfo.pathList.IGNORES, p.getUniqueId().toString());
+                info.addValueToArray(PlayerSocialInfoPath.Path.IGNORES.getPath(), p.getUniqueId().toString());
                 StringBuilder textToExecutor = new StringBuilder().append(Prefix.CHAT.value) // 수락한 사람에게
                         .append(" &f&l")
                         .append(p.getName())
@@ -46,7 +53,7 @@ public class Ignores {
     }
     public void removeIgnores(OfflinePlayer p) {
         if(this.isIgnores(p)) {
-            info.removeValueFromArray(PlayerSocialInfo.pathList.IGNORES, p.getUniqueId().toString());
+            info.removeValueFromArray(PlayerSocialInfoPath.Path.IGNORES.getPath(), p.getUniqueId().toString());
             StringBuilder textToExecutor = new StringBuilder().append(Prefix.CHAT.value) // 수락한 사람에게
                     .append(" &f&l")
                     .append(p.getName())

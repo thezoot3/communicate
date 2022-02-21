@@ -1,22 +1,27 @@
 package games.adlsv.communicate.eventListener;
-import com.mongodb.client.MongoCollection;
 import games.adlsv.communicate.api.chatting.Prefix;
-import org.bson.Document;
+import games.adlsv.communicate.api.mongoDB.PlayerSocialCollections;
+import games.adlsv.communicate.api.mongoDB.PlayerSocialInfoPath;
+import games.adlsv.communicate.api.util.DataUtil;
+import games.adlsv.mongoDBAPI.MongoDBDocument;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import games.adlsv.communicate.api.mongoDB.MongoDBCollections;
 import games.adlsv.communicate.api.chatting.WipeChatting;
+
+import java.util.Date;
+
 import static com.mongodb.client.model.Filters.eq;
 
 public class JoinEventListener implements Listener {
     @EventHandler (priority = EventPriority.HIGH)
     public void PlayerJoinEvent(PlayerJoinEvent e) {
-        MongoCollection collection = MongoDBCollections.USERS.getCollection();
-        Document doc = (Document) collection.find(eq("connectcode", e.getPlayer().getUniqueId().toString())).first();
+        MongoDBDocument doc = new MongoDBDocument(PlayerSocialCollections.Path.COMMUNICATE.getCollection(), eq("id", DataUtil.getDiscordIdFromPlayer(e.getPlayer())));
+        long first = Date.parse(doc.get(PlayerSocialInfoPath.Path.FIRSTJOIN.getPath().getPath()).getAsString());
+        long last = Date.parse(doc.get(PlayerSocialInfoPath.Path.LASTJOIN.getPath().getPath()).getAsString());
         WipeChatting.wipe(e.getPlayer());
         StringBuilder welcome = new StringBuilder();
         welcome.append(Prefix.CHAT.value)
@@ -31,7 +36,7 @@ public class JoinEventListener implements Listener {
         } else {
             welcome.append(Prefix.CHAT.value)
                     .append(" &f&l현재까지 총 &9&l")
-                    .append(doc.get("playTime"))
+                    .append((first - last)/ 3600)
                     .append("&f&l시간 플레이 하셨습니다.");
         }
         e.joinMessage(null);

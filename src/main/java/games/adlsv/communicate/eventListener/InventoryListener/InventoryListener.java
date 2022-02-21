@@ -1,4 +1,4 @@
-package games.adlsv.communicate.eventListener;
+package games.adlsv.communicate.eventListener.InventoryListener;
 
 import org.bukkit.event.inventory.InventoryClickEvent;
 

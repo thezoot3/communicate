@@ -1,4 +1,4 @@
-package games.adlsv.communicate.eventListener;
+package games.adlsv.communicate.eventListener.InventoryListener;
 
 import games.adlsv.communicate.api.chatting.Prefix;
 import net.kyori.adventure.text.TextComponent;

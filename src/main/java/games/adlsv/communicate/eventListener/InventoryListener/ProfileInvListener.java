@@ -1,4 +1,4 @@
-package games.adlsv.communicate.eventListener;
+package games.adlsv.communicate.eventListener.InventoryListener;
 
 import games.adlsv.communicate.api.social.Friends;
 import games.adlsv.communicate.api.util.DataUtil;
@@ -17,7 +17,7 @@ public class ProfileInvListener implements InventoryListener {
         switch (e.getRawSlot()) {
             case 29: // DM 시작
                 e.getWhoClicked().closeInventory();
-                p.performCommand("/귓속말 " + profilePlayer.getName());
+                p.performCommand("귓속말 " + profilePlayer.getName());
                 break;
             case 31: // 친구 요청
                 e.getWhoClicked().closeInventory();
@@ -25,7 +25,7 @@ public class ProfileInvListener implements InventoryListener {
                 break;
             case 33: // 차단
                 e.getWhoClicked().closeInventory();
-                System.out.println("1");
+                p.performCommand("차단 추가" + profilePlayer.getName());
                 break;
         }
     }

@@ -1,5 +1,6 @@
 package games.adlsv.communicate.command;
 
+import games.adlsv.communicate.api.mongoDB.PlayerSocialCollections;
 import games.adlsv.communicate.api.util.DataUtil;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -12,8 +13,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import games.adlsv.communicate.api.mongoDB.MongoDBCollections;
-
 import static com.mongodb.client.model.Filters.eq;
 
 import com.mongodb.client.MongoCollection;
@@ -25,8 +24,8 @@ public class VerifyCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if(args[0].matches("[0-9a-zA-z]{6}")) {
-            MongoCollection usersCollection = MongoDBCollections.USERS.getCollection();
-            MongoCollection commCollection = MongoDBCollections.COMMUNICATE.getCollection();
+            MongoCollection usersCollection = PlayerSocialCollections.Path.USERS.getCollection().getCollection();
+            MongoCollection commCollection =  PlayerSocialCollections.Path.COMMUNICATE.getCollection().getCollection();
             Document doc = (Document) usersCollection.find(eq("connectcode", args[0])).first();
             try {
                 doc.getBoolean("certified");
@@ -39,7 +38,8 @@ public class VerifyCommand implements CommandExecutor {
                         .append("lastJoin", new Date().toString())
                         .append("info", new Document().append("introduce", ""))
                         .append("friend", new Document().append("friends", Collections.emptyList()).append("requests", Collections.emptyList()))
-                        .append("ignore", Collections.emptyList());
+                        .append("ignore", Collections.emptyList())
+                        .append("firstJoin", new Date().toString());
                 commCollection.insertOne(insertDoc);
                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&f&l인증에 &a&l성공&f&l하였습니다. &a&l인증&f&l 페이지를 새로고침해주세요"));
             } catch(Exception e) {

@@ -1,5 +1,6 @@
 package games.adlsv.communicate.eventListener;
 
+import games.adlsv.communicate.eventListener.InventoryListener.InventoryListener;
 import net.kyori.adventure.text.TextComponent;
 
 import org.bukkit.event.EventHandler;
@@ -25,7 +26,7 @@ public class InventoryClickEvent implements Listener {
         }
         return null;
     }
-    private static HashMap<String, InventoryListener> listeners = new HashMap<>();
+    private static final HashMap<String, InventoryListener> listeners = new HashMap<>();
     public static void setHandler(String invname, InventoryListener object) {
         listeners.put(invname, object);
     }

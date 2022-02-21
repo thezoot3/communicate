@@ -1,11 +1,13 @@
 package games.adlsv.communicate.command;
 
 import com.google.gson.JsonArray;
-import games.adlsv.communicate.api.chatting.PlayerSocialInfo;
 import games.adlsv.communicate.api.chatting.Prefix;
+import games.adlsv.communicate.api.mongoDB.PlayerSocialCollections;
+import games.adlsv.communicate.api.mongoDB.PlayerSocialInfoPath;
 import games.adlsv.communicate.api.social.Ignores;
 import games.adlsv.communicate.api.util.DataUtil;
 import games.adlsv.communicate.api.util.SimpleItem;
+import games.adlsv.mongoDBAPI.MongoDBDocumentUtil;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
@@ -17,10 +19,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
+
+import static com.mongodb.client.model.Filters.eq;
 
 public class Ignore implements CommandExecutor {
     @Override
@@ -41,8 +44,8 @@ public class Ignore implements CommandExecutor {
                     break;
                 case "목록":
                     Inventory inv = Bukkit.createInventory((InventoryHolder) sender, 54, Component.text("차단 목록"));
-                    PlayerSocialInfo info = new PlayerSocialInfo((Player) sender);
-                    JsonArray fList = info.get(PlayerSocialInfo.pathList.IGNORES).getAsJsonArray();
+                    MongoDBDocumentUtil info = new MongoDBDocumentUtil( PlayerSocialCollections.Path.COMMUNICATE.getCollection(),eq("id", DataUtil.getDiscordIdFromPlayer((Player) sender)));
+                    JsonArray fList = info.get(PlayerSocialInfoPath.Path.IGNORES.getPath()).getAsJsonArray();
                     for (int i = 0; i < fList.size(); i++) {
                         OfflinePlayer ignores = Bukkit.getOfflinePlayer(UUID.fromString(fList.get(i).getAsString()));
                         SimpleItem item = Profile.getPlayerSkullWithInfo(ignores);

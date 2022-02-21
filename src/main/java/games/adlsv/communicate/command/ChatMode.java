@@ -22,8 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ChatMode implements CommandExecutor {
-    public static HashMap<Player, Prefix> chatmode = new HashMap<>();
-    private static ArrayList<Prefix> modes = new ArrayList<>(Arrays.asList(
+    public static final HashMap<Player, Prefix> chatmode = new HashMap<>();
+    private static final ArrayList<Prefix> modes = new ArrayList<>(Arrays.asList(
             Prefix.CHATMODE_서버,
             Prefix.CHATMODE_월드,
             Prefix.CHATMODE_로컬,

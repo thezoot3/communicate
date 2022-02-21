@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SimpleItem {
-    private ItemStack item;
-    private Material material;
+    private final ItemStack item;
+    private final Material material;
     private ItemMeta meta;
     private String[] lores;
     private String name;

@@ -16,6 +16,10 @@ repositories {
         name = 'sonatype'
         url = 'https://oss.sonatype.org/content/groups/public/'
     }
+    maven {
+        name = 'local-repo'
+        url = 'C:/Users/thezo/.m2/repository'
+    }
 }
 
 compileJava.options.encoding = 'UTF-8'
@@ -29,6 +33,7 @@ dependencies {
     compileOnly 'org.mongodb:mongodb-driver-sync:4.4.2'
     compileOnly 'com.google.code.gson:gson:2.8.9'
     compileOnly 'com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT'
+    compileOnly 'games.adlsv:mongoDBAPI:1.0-SNAPSHOT'
 }
 def targetJavaVersion = 8
 java {

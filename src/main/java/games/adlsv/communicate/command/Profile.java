@@ -1,9 +1,11 @@
 package games.adlsv.communicate.command;
 
 import com.google.gson.JsonElement;
-import games.adlsv.communicate.api.chatting.PlayerSocialInfo;
+import games.adlsv.communicate.api.mongoDB.PlayerSocialCollections;
+import games.adlsv.communicate.api.mongoDB.PlayerSocialInfoPath;
 import games.adlsv.communicate.api.util.DataUtil;
 import games.adlsv.communicate.api.util.SimpleItem;
+import games.adlsv.mongoDBAPI.MongoDBDocumentUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -17,6 +19,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
+
+import static com.mongodb.client.model.Filters.eq;
 
 public class Profile implements CommandExecutor {
 
@@ -35,7 +39,7 @@ public class Profile implements CommandExecutor {
                 toShow, 54,
                 Component.text(ChatColor.translateAlternateColorCodes('&', ChatColor.BOLD + owner + "님의 프로필"))
         );
-        PlayerSocialInfo info = new PlayerSocialInfo(p);
+        MongoDBDocumentUtil info = new MongoDBDocumentUtil( PlayerSocialCollections.Path.COMMUNICATE.getCollection(), eq("id", DataUtil.getDiscordIdFromPlayer(p)));
         for(int i = 0; i < 6; i++) {
             inv.setItem(i * 9, new ItemStack(Material.GREEN_STAINED_GLASS));
             inv.setItem(i * 9 + 8, new ItemStack(Material.GREEN_STAINED_GLASS));
@@ -45,13 +49,13 @@ public class Profile implements CommandExecutor {
                 "&f&lDM은 다른 유저에게 노출되지 않습니다."
         });
         SimpleItem friendIcon = new SimpleItem(Material.EMERALD, "&6&l" + p.getName() + "&f&l님에게 친구 요청 보내기");
-        for(JsonElement e : info.get(PlayerSocialInfo.pathList.FRIENDS).getAsJsonArray()) {
+        for(JsonElement e : info.get(PlayerSocialInfoPath.Path.FRIENDS.getPath()).getAsJsonArray()) {
             if(e.getAsString().equals(toShow.getName())) {
                 friendIcon.setName("&6&l" + p.getName() + "&f&l님은 당신의 친구입니다!");
             }
         }
         SimpleItem ignoreIcon = new SimpleItem(Material.BARRIER, "&6&l" + p.getName() + "&f&l님을 &4&l차단&f&l하기");
-        for(JsonElement e : info.get(PlayerSocialInfo.pathList.IGNORES).getAsJsonArray()) {
+        for(JsonElement e : info.get(PlayerSocialInfoPath.Path.IGNORES.getPath()).getAsJsonArray()) {
             if(e.getAsString().equals(toShow.getName())) {
                 friendIcon.setName("&6&l" + p.getName() + "&f&l님은 이미 &4&l차단&f&l 된 상태입니다.");
             }
@@ -63,7 +67,7 @@ public class Profile implements CommandExecutor {
         toShow.openInventory(inv);
     }
     public static SimpleItem getPlayerSkullWithInfo(OfflinePlayer p) {
-        PlayerSocialInfo info = new PlayerSocialInfo(p);
+        MongoDBDocumentUtil info = new MongoDBDocumentUtil( PlayerSocialCollections.Path.COMMUNICATE.getCollection(), eq("id", DataUtil.getDiscordIdFromPlayer(p)));
         SimpleItem playerHead = new SimpleItem(Material.PLAYER_HEAD, ChatColor.BOLD + p.getName() + "님의 프로필");
         SkullMeta meta = ((SkullMeta) playerHead.getItemMeta());
         meta.setOwningPlayer(p);
@@ -72,11 +76,11 @@ public class Profile implements CommandExecutor {
                 new StringBuilder().append(ChatColor.WHITE).append(ChatColor.BOLD).append(
                         p.isOnline() ?
                                 "현재 접속 중인 플레이어입니다" :
-                                "마지막 접속 시각: " + info.get(PlayerSocialInfo.pathList.LASTJOIN).getAsString()
+                                "마지막 접속 시각: " + info.get(PlayerSocialInfoPath.Path.LASTJOIN.getPath()).getAsString()
                 ).toString(),
                 new StringBuilder().append(ChatColor.WHITE).append(ChatColor.BOLD).append(
-                        info.get(PlayerSocialInfo.pathList.INTRODUCE).getAsString() != null && !info.get(PlayerSocialInfo.pathList.INTRODUCE).getAsString().equals("")?
-                                "소개: " + info.get(PlayerSocialInfo.pathList.INTRODUCE).getAsString() :
+                        info.get(PlayerSocialInfoPath.Path.INTRODUCE.getPath()).getAsString() != null && !info.get(PlayerSocialInfoPath.Path.INTRODUCE.getPath()).getAsString().equals("")?
+                                "소개: " + info.get(PlayerSocialInfoPath.Path.INTRODUCE.getPath()).getAsString() :
                                 "소개가 없습니다"
                 ).toString()
         };;
